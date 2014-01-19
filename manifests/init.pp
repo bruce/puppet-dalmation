@@ -25,7 +25,8 @@ define dalmation::dotfiles($source = $title, $dir = undef) {
   file_line { "gitignore ${repo_dir} .install.rb":
     path  => "${repo_dir}/.gitignore",
     line  => '/.install.rb',
-    match => '/.install.rb.*'
+    match => '/.install.rb.*',
+    require => Repository[$repo_dir]
   }
 
 }
