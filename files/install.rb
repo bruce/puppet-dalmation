@@ -3,15 +3,22 @@
 require "find"
 require "fileutils"
 
-REPLACE_ENV = %w(HOME USER)
+REPLACE_ENV = %w(HOME) # Can't reliably expect much more than this
 
 def replace_env(target)
   REPLACE_ENV.inject(target) do |memo, var|
-    memo.gsub(/\$\{?#{var}\}?/, ENV[var])
+    value = ENV[var]
+    if value
+      memo.gsub(/\$\{?#{var}\}?/, value)
+    else
+      memo
+    end
   end
+rescue => e
+  puts "Could not replace environment variables in: '#{target}'"
 end
 
-Find.find(File.dirname(__FILE__)) do |path|
+Find.find(ARGV[0] || Dir.pwd) do |path|
   if path =~ /^(.*?).symlink$/
     source = $1
     target = replace_env(File.read(path).strip)
