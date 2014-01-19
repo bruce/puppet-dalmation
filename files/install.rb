@@ -7,7 +7,7 @@ REPLACE_ENV = %w(HOME USER)
 
 def replace_env(target)
   REPLACE_ENV.inject(target) do |memo, var|
-    target.gsub(/\$\{?#{var}\}?/, ENV[var])
+    memo.gsub(/\$\{?#{var}\}?/, ENV[var])
   end
 end
 
