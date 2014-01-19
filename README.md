@@ -1,64 +1,44 @@
-# Using this Template
+# puppet-dalmation
 
-Bootstrap it:
+Simple dotfile installation with Boxen.
 
-```
-mkdir -p ~/src/boxen/puppet-mynewmodule
-cd ~/src/boxen/puppet-mynewmodule
-git init .
-git remote add template https://github.com/boxen/puppet-template.git
-git fetch template
-git checkout -b master template/master
-```
+## Required Puppet Dependencies
 
-Now we're ready to make it our own!
+ * boxen
+ * stdlib
 
-```
-script/cibuild
-.bundle/binstubs/rspec-puppet-init
-```
+## Example
 
-Now you'll need to edit `manifests/init.pp` and `spec/classes/template_spec.rb`
-for your module.
-If your module has other dependencies, be sure to update
-`spec/fixtures/Puppetfile`.
-From then on, you can use `script/cibuild` to run the tests.
-
-When you're ready to push:
-
-```
-git create githubusername/puppet-mynewmodule
-git push origin master
-```
-
-The rest of the README as follows can be used as a template for your module's README.
-
-# Template Puppet Module for Boxen
-
-An example of how we write Puppet modules for Boxen. Replace this
-paragraph with a short explanation of what the heck makes your module
-useful.
-
-A great module has a working travis build
-
-[![Build Status](https://travis-ci.org/boxen/puppet-template.png?branch=master)](https://travis-ci.org/boxen/puppet-template)
-
-## Usage
+In your personal manifest, the following will install a directory of
+dotfiles at `http://github.com/username/reponame` at `$HOME/.dotfiles`:
 
 ```puppet
-boxen::example { 'best example ever':
-  salutation => 'fam'
+dalmation::dotfiles { "username/reponame": }
+```
+
+You can change the directory by passing a `dir` option:
+
+```puppet
+dalmation::dotfiles { "username/reponame":
+  dir => "/my/installation/location"
 }
 ```
 
-## Required Puppet Modules
+Once your dotfiles are checked out, they will be installed via
+symlinking to the locations you define.
 
-* `boxen`
-* `anything-else`
+## How to package dotfiles
 
-## Development
+Create files or directories, and accompany them with files alongside
+with an additional `.symlink` extension. The contents of the file
+should contain the target location of the symlink.
 
-Set `GITHUB_API_TOKEN` in your shell with a [Github oAuth Token](https://help.github.com/articles/creating-an-oauth-token-for-command-line-use) to raise your API rate limit. You can get some work done without it, but you're less likely to encounter errors like `Unable to find module 'boxen/puppet-boxen' on https://github.com`.
+It can contain `$HOME`.
 
-Then write some code. Run `script/cibuild` to test it. Check the `script`
-directory for other useful tools.
+## Restrictions
+
+Note that symlink definitions pointing to non-existing directories
+will fail gracefully with STDERR logging.
+
+Boxen will drop the installation script at `.install.rb` (and add it
+to `.gitignore`). You can manually run it and see any failed installations.
