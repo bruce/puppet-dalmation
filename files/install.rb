@@ -3,14 +3,18 @@
 require "find"
 require "fileutils"
 
-def replace_home(target)
-  target.gsub(/\$\{?HOME\}?/, ENV["HOME"])
+REPLACE_ENV = %w(HOME USER)
+
+def replace_env(target)
+  REPLACE_ENV.inject(target) do |memo, var|
+    target.gsub(/\$\{?#{var}\}?/, ENV[var])
+  end
 end
 
 Find.find(File.dirname(__FILE__)) do |path|
   if path =~ /^(.*?).symlink$/
     source = $1
-    target = replace_home(File.read(path).strip)
+    target = replace_env(File.read(path).strip)
     begin
       if ENV["DRYRUN"]
         $stderr.puts "ln -s #{source} #{target}"
