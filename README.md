@@ -43,15 +43,14 @@ For example, I maintain a
 that I store in my dotfiles repository as `emacs/personal`. I have
 that directory configured in my
 [.symlink](https://github.com/bruce/dotfiles/blob/master/emacs/personal.symlink)
-to be symlinked to `~/.emacs.d/bruce`.
+to be symlinked to `$HOME/.emacs.d/bruce`.
 
 ## Restrictions
 
 Note that symlink definitions pointing to non-existing directories
 will fail gracefully with STDERR logging.
 
-Not all environment variables are available for expansion: only `$HOME` (and path
-expansions like `~`) currently work.
+The $HOME environment variable will be expanded.
 
 ## Debugging, running manually
 
