@@ -21,7 +21,7 @@ end
 Find.find(ARGV[0] || Dir.pwd) do |path|
   if path =~ /^(.*?).symlink$/
     source = $1
-    target = replace_env(File.read(path).strip)
+    target = File.expand_path(replace_env(File.read(path).strip))
     begin
       if ENV["DRYRUN"]
         $stderr.puts "ln -s #{source} #{target}"
